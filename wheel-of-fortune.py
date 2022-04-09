@@ -8,3 +8,11 @@ def Spin_Wheel(final_round = False):
         return wheel_value
 
 print(Spin_Wheel())
+
+
+f = open('words_alpha.txt')
+dict_lines = f.read().splitlines()
+f.close()
+
+correct_word = random.choice(dict_lines)
+print(correct_word)
