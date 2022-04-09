@@ -7,15 +7,34 @@ def Validate_Input(input_type, message):
             player_name = input(message)
             if any(c.isnumeric() for c in player_name):
                 print()
-                print("Invalid name! Only name's with alphabetic characters (A-Z) allowed!\n")
+                print("Error: Invalid Name! Only name's with alphabetic characters (A-Z) allowed!\n")
+            elif len(player_name) > 20:
+                print()
+                print("Error: Name is too long!\n")
             else:
                 valid_input == True
                 return player_name
 
-print(Validate_Input("name",'Enter Name for Player 1: '))
+
 
 def Game_Setup():
-    print("Welcome to Wheel of Fortune!\n============================")
+    print("Welcome to Wheel of Fortune!\n============================\n")
+
+    Player_1 = Validate_Input("name",'Enter Name for Player 1: ').title()
+    Player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
+
+    while Player_2.lower() == Player_1.lower():
+        print()
+        print("Error: Name taken!\n")
+        Player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
+
+    Player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+
+    while Player_3.lower() == Player_1.lower() or Player_3.lower() == Player_2.lower():
+        print()
+        print("Error: Name taken!\n")
+        Player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+
 
     f = open('words_alpha.txt')
     dict_lines = f.read().splitlines()
