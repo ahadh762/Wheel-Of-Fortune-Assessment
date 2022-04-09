@@ -26,6 +26,7 @@
     3. Guess the word
         * If guess is successful, round ends and players keep whatever they earned that round
 * If player guesses consonant or word incorrectly, they lose their turn
+* Round ends when player guesses the word correctly
 
 <br />
 
@@ -36,8 +37,8 @@
 * Final round starts with letters R-S-T-L-N-E revealed
 * In the final round, the player can pick 3 more consonants and 1 more vowel
 * Timer of 10 seconds for the player to guess that answer
-* If they get the final answer, show them the cash prize that they won
-* Show player’s total earnings after game is over
+* If they guess the final answer correctly, show them the cash prize that they won
+* Show the player’s total earnings after game is over
 
 <br />
 
