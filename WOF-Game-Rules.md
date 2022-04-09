@@ -1,6 +1,6 @@
 ## Game Set Up:
 
-* 3 Players
+* 3 Players (no more no less)
 * 3 rounds total
 * Each round (Rounds 1 & 2) have separate banks for each player
 * First 2 rounds have all 3 players and last round has only 1 player (the player with the highest bank after first 2 rounds)
@@ -26,7 +26,7 @@
     3. Guess the word
         * If guess is successful, round ends and players keep whatever they earned that round
 * If player guesses consonant or word incorrectly, they lose their turn
-* Round ends when player guesses the word correctly
+
 
 <br />
 
