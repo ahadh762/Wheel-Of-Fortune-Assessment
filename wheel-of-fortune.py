@@ -1,7 +1,22 @@
 import random
 
+def Validate_Input(input_type, message):
+    valid_input = False
+    if input_type == "name":
+        while valid_input == False:
+            player_name = input(message)
+            if any(c.isnumeric() for c in player_name):
+                print()
+                print("Invalid name! Only name's with alphabetic characters (A-Z) allowed!\n")
+            else:
+                valid_input == True
+                return player_name
+
+print(Validate_Input("name",'Enter Name for Player 1: '))
 
 def Game_Setup():
+    print("Welcome to Wheel of Fortune!\n============================")
+
     f = open('words_alpha.txt')
     dict_lines = f.read().splitlines()
     f.close()
@@ -20,12 +35,17 @@ def Game_Setup():
     return empty_board
 
 
+def Player_Bank(prize):
+    print(prize)
+
+
 def Spin_Wheel(final_round = False):
-    if final_round == False:
+    if not final_round:
         wheel = ['Lose A Turn', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt',\
             750, 800, 300, 200, 100, 500, 400, 300, 200, 850, 700, 200, 150, 450]
         wheel_value = random.choice(wheel)
         return wheel_value
+
 
 print(Spin_Wheel())
 
