@@ -1,5 +1,25 @@
 import random
 
+
+def Game_Setup():
+    f = open('words_alpha.txt')
+    dict_lines = f.read().splitlines()
+    f.close()
+    correct_word = random.choice(dict_lines)
+    empty_board = []
+
+    for letter in correct_word:
+        if letter.isalpha():
+            empty_board.append("_")
+        else:
+            empty_board.append(letter)
+
+    empty_board = ' '.join(empty_board)
+
+
+    return empty_board
+
+
 def Spin_Wheel(final_round = False):
     if final_round == False:
         wheel = ['Lose A Turn', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt',\
@@ -9,10 +29,4 @@ def Spin_Wheel(final_round = False):
 
 print(Spin_Wheel())
 
-
-f = open('words_alpha.txt')
-dict_lines = f.read().splitlines()
-f.close()
-
-correct_word = random.choice(dict_lines)
-print(correct_word)
+print(Game_Setup())
