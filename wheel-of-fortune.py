@@ -2,6 +2,7 @@ import random
 
 def Validate_Input(input_type, message):
     valid_input = False
+    
     while valid_input == False:
         if input_type == "name":
             player_name = input(message)
@@ -28,6 +29,20 @@ def Validate_Input(input_type, message):
             else:
                 valid_input == True
                 return consonant
+        elif input_type == "vowel":
+            vowel = input(message)
+            if any(c.isnumeric() for c in vowel) or len(vowel) > 1:
+                print()
+                print("Error: Invalid Input!\n")
+            elif vowel not in ['a','e','i','o','u']:
+                print()
+                print("Error: That's a consonant! \n")
+            elif vowel in game_board:
+                print()
+                print("Error: Letter has been guessed already")
+            else:
+                valid_input == True
+                return vowel
         elif input_type == "option":
             while valid_input == False:
                 try:
@@ -108,9 +123,10 @@ def Game_Setup():
 
 
 
-def Update_Board(input_type, current_player, guess):
+def Update_Board(input_type, guess):
 
     global game_board
+    global current_player
 
     if input_type == 'letter':
         count = 0
@@ -122,7 +138,7 @@ def Update_Board(input_type, current_player, guess):
                     game_board[i] = guess.upper()
         else:
             print("\nIncorrect!\n")
-            current_player = Next_Player(current_player)
+            current_player = Next_Player()
 
     elif input_type == "word":
         if guess.lower() == correct_word:
@@ -132,7 +148,7 @@ def Update_Board(input_type, current_player, guess):
             return current_player, 1
         else:
             print("Incorrect!\n")
-            current_player = Next_Player(current_player)
+            current_player = Next_Player()
             return current_player, 0
 
     print(' '.join(game_board))
@@ -141,18 +157,18 @@ def Update_Board(input_type, current_player, guess):
 
 
 
-def Next_Player(current_player):
+def Next_Player():
     position = player_list.index(current_player)
     if position == 0 or position == 1:
         next_player = player_list[position + 1]
-        print(f"{current_player} loses their turn! {next_player} goes next!\n")
+        print(f"{next_player} goes next!\n")
     else:
         next_player = player_list[0]
-        print(f"{current_player} loses their turn! {next_player} goes next!\n")
+        print(f"{next_player} goes next!\n")
     return next_player
 
 
-def Player_Bank(current_player, prize, count = -1):
+def Player_Bank(prize, count):
     global player_1_bank
     global player_2_bank
     global player_3_bank
@@ -162,15 +178,15 @@ def Player_Bank(current_player, prize, count = -1):
 
     if player == 0:
         player_1_bank += prize*count
-        if count == -1:
+        if count == 0:
             player_1_bank = 0
     elif player == 1:
         player_2_bank += prize*count
-        if count == -1:
+        if count == 0:
             player_2_bank = 0
     else:
         player_3_bank += prize*count
-        if count == -1:
+        if count == 0:
             player_3_bank = 0
 
     bank_list = [player_1_bank, player_2_bank, player_3_bank]
@@ -182,7 +198,8 @@ def Player_Bank(current_player, prize, count = -1):
     print()
 
 
-def Spin_Wheel(player, final_round = False):
+def Spin_Wheel(final_round = False):
+    global current_player
 
     if not final_round:
         wheel = ['Lose a Turn!', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt!',\
@@ -190,43 +207,47 @@ def Spin_Wheel(player, final_round = False):
         wheel_value = random.choice(wheel)
 
         if isinstance(wheel_value,int):
-            print(f"{player} spins the wheel, and it lands on ${wheel_value}!\n")
+            print(f"{current_player} spins the wheel, and it lands on ${wheel_value}!\n")
         else:
-            print(f"{player} spins the wheel, and it lands on {wheel_value}\n")
+            print(f"{current_player} spins the wheel, and it lands on {wheel_value}\n")
 
         return wheel_value
 
 
-def Round(current_player):
-
-    wheel_spin = Spin_Wheel(current_player)
+def Round():
+    global current_player
+    wheel_spin = Spin_Wheel()
     if isinstance(wheel_spin,str):
         if wheel_spin == 'Bankrupt!':
-            Player_Bank(current_player,0)
+            Player_Bank(0,0)
 
-        current_player = Next_Player(current_player)
+        current_player = Next_Player()
         print(' '.join(game_board))
         print()
-        return current_player, False
+        return False
     else:
         consonant_guess = Validate_Input('consonant','Guess a consonant: ')
         next_player = current_player
-        current_player, count = Update_Board('letter', current_player, consonant_guess)
+        current_player, count = Update_Board('letter', consonant_guess)
         if next_player == current_player:
-            Player_Bank(current_player, wheel_spin, count)
-            return current_player, True
+            Player_Bank(wheel_spin, count)
+            return True
         else:
-            return current_player, False
+            return False
 
 
-def Loop_Round(current_player):
+def Loop_Round():
+    global current_player
     start_round = False
     while start_round == False:
-        current_player, start_round = Round(current_player)
+        start_round = Round()
 
 
-def Options_Menu(current_player):
+def Options_Menu():
     global end_round
+    global current_player
+    global game_board
+    
     print()
     print(f"OK {current_player}! What would you like to do?")
     print("=================================================\n")
@@ -246,14 +267,29 @@ def Options_Menu(current_player):
             end_round = True
         else:
             print("Sorry. That is incorrect!\n")
-            current_player = Next_Player(current_player)
-            Loop_Round(current_player)
+            print(' '.join(game_board))
+            print()
+            current_player = Next_Player()
+            Loop_Round()
+
+    elif option == 2:
+        player = player_list.index(current_player)
+        if bank_list[player] < 250:
+            print()
+            print("Error: Not enough money to buy a vowel!\n")
+        else:
+            Player_Bank(250, -1)
+            vowel = Validate_Input("vowel", "Buy a vowel: ")
+            next_player = current_player
+            current_player, count = Update_Board('letter',vowel)
+            if next_player != current_player:
+                Loop_Round()
 
     if option == 3:
         print()
         print(' '.join(game_board))
         print()
-        Loop_Round(current_player)
+        Loop_Round()
 
 
 Game_Setup()
@@ -265,8 +301,7 @@ print(f"{current_player} goes first!\n")
 
 end_round = False
 
-Loop_Round(current_player)
+Loop_Round()
 
 while end_round == False:
-    Options_Menu(current_player)
-
+    Options_Menu()
