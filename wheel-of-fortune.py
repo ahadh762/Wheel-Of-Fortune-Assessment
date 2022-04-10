@@ -25,6 +25,31 @@ def Validate_Input(input_type, message):
             else:
                 valid_input == True
                 return consonant
+        elif input_type == "option":
+            while valid_input == False:
+                try:
+                    user_input = int(input(message))
+                    if user_input > 3 or user_input < 1:
+                        print()
+                        print('Error: Invalid input!\n')
+                    else:
+                        valid_value = True
+                        return user_input
+                except ValueError:
+                    print()
+                    print("Error: Invalid input!\n")
+                    continue        
+        elif input_type == "word":
+            word = input(message)
+            if any(c.isnumeric() for c in word):
+                print()
+                print("Error: Invalid Input!\n")
+            elif word not in dict_lines:
+                print()
+                print("Error: Not a Word!\n")
+            else:
+                valid_input == True
+                return word
 
 
 def Game_Setup():
@@ -82,6 +107,8 @@ def Game_Setup():
 
 def Update_Board(input_type, current_player, guess):
 
+    global game_board
+
     if input_type == 'letter':
         count = 0
         if any(letter in correct_word for letter in guess):
@@ -93,8 +120,20 @@ def Update_Board(input_type, current_player, guess):
         else:
             print("Incorrect!\n")
             current_player = Next_Player(current_player)
-    
+
+    elif input_type == "word":
+        if guess.lower() == correct_word:
+            game_board = list(correct_word)
+            print("Correct!\n")
+            print("The word was \n")
+            return current_player, 1
+        else:
+            print("Incorrect!\n")
+            current_player = Next_Player(current_player)
+            return current_player, 0
+
     print(' '.join(game_board))
+    print()
     return current_player, count
 
 
@@ -145,20 +184,42 @@ def Spin_Wheel(player, final_round = False):
 
         return wheel_value
 
-def Round_Start(current_player):
-    wheel_spin = Spin_Wheel(current_player)
-    if isinstance(wheel_spin,str):
-        current_player = Next_Player(current_player)
-        return current_player, False, wheel_spin
-    else:
-        consonant_guess = Validate_Input('consonant','Guess a consonant: ')
-        next_player = current_player
-        current_player, count = Update_Board('letter', current_player, consonant_guess)
-        if next_player == current_player:
-            Player_Bank(current_player, wheel_spin, count)
-            return current_player, True
+def Options_Menu(current_player):
+    print()
+    print(f"OK {current_player}! What would you like to do?")
+    print("=================================================\n")
+    print("1. Solve the Puzzle\n")
+    print("2. Buy a Vowel (Lose $250)\n")
+    print("3. Spin the Wheel of Fortune!\n")
+    option = Validate_Input("option", 'Choose an option: ')
+    return option
+
+
+def Round_Start(current_player, round_number = 0):
+    if round_number == 0:
+        wheel_spin = Spin_Wheel(current_player)
+        if isinstance(wheel_spin,str):
+            current_player = Next_Player(current_player)
+            return current_player, False, wheel_spin
         else:
-            return current_player, False
+            consonant_guess = Validate_Input('consonant','Guess a consonant: ')
+            next_player = current_player
+            current_player, count = Update_Board('letter', current_player, consonant_guess)
+            if next_player == current_player:
+                Player_Bank(current_player, wheel_spin, count)
+                return current_player, True
+            else:
+                return current_player, False
+
+def Turn_Two(current_player):
+    choice = Options_Menu(current_player)
+    if choice == 1:
+        guess = Validate_Input("word","Guess a word: ")
+    elif choice == 3:
+        round_finished = False
+        while round_finished == False:
+            current_player, round_finished = Round_Start(current_player)
+
         
 # def Round(current_player):
 
@@ -184,7 +245,7 @@ start_round = False
 while start_round == False:
     current_player, start_round = Round_Start(current_player)
 
+Turn_Two(current_player)
 
 # while solved == False:
 #     current_player, solved = Round(current_player)
-
