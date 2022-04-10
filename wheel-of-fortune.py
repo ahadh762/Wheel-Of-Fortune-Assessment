@@ -22,6 +22,9 @@ def Validate_Input(input_type, message):
             elif consonant in ['a','e','i','o','u']:
                 print()
                 print("Error: Vowel inputted!\n")
+            elif consonant in game_board:
+                print()
+                print("Error: Letter has been guessed already")
             else:
                 valid_input == True
                 return consonant
@@ -192,7 +195,8 @@ def Options_Menu(current_player):
     print("2. Buy a Vowel (Lose $250)\n")
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
-    return option
+    if option == 3:
+        Spin_Again(current_player)
 
 
 def Round_Start(current_player, round_number = 0):
@@ -211,14 +215,10 @@ def Round_Start(current_player, round_number = 0):
             else:
                 return current_player, False
 
-def Turn_Two(current_player):
-    choice = Options_Menu(current_player)
-    if choice == 1:
-        guess = Validate_Input("word","Guess a word: ")
-    elif choice == 3:
-        round_finished = False
-        while round_finished == False:
-            current_player, round_finished = Round_Start(current_player)
+def Spin_Again(current_player):
+    start_round = False
+    while start_round == False:
+        current_player, start_round = Round_Start(current_player)
 
         
 # def Round(current_player):
@@ -241,11 +241,13 @@ current_player = random.choice(player_list)
 print(f"{current_player} goes first!\n")
 
 start_round = False
+end_round = False
 
 while start_round == False:
     current_player, start_round = Round_Start(current_player)
 
-Turn_Two(current_player)
+while end_round == False:
+    Options_Menu(current_player)
 
 # while solved == False:
 #     current_player, solved = Round(current_player)
