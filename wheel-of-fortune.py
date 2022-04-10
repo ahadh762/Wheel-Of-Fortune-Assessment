@@ -1,12 +1,14 @@
 import random
 
+previous_words = set()
+
 def Validate_Input(input_type, message):
     valid_input = False
-    
+
     while valid_input == False:
         if input_type == "name":
             player_name = input(message)
-            if any(c.isnumeric() for c in player_name):
+            if any(c.isnumeric() for c in player_name) or player_name == "":
                 print()
                 print("Error: Invalid Name! Only name's with alphabetic characters (A-Z) allowed!\n")
             elif len(player_name) > 20:
@@ -16,7 +18,7 @@ def Validate_Input(input_type, message):
                 valid_input == True
                 return player_name
         elif input_type == "consonant":
-            consonant = input(message)
+            consonant = input(message).lower()
             if any(c.isnumeric() for c in consonant) or len(consonant) > 1:
                 print()
                 print("Error: Invalid Input!\n")
@@ -30,7 +32,7 @@ def Validate_Input(input_type, message):
                 valid_input == True
                 return consonant
         elif input_type == "vowel":
-            vowel = input(message)
+            vowel = input(message).lower()
             if any(c.isnumeric() for c in vowel) or len(vowel) > 1:
                 print()
                 print("Error: Invalid Input!\n")
@@ -70,7 +72,7 @@ def Validate_Input(input_type, message):
                 return word
 
 
-def Game_Setup():
+def Game_Setup(same_players = True):
     
     global correct_word
     global player_list
@@ -85,29 +87,39 @@ def Game_Setup():
     player_2_bank = 0
     player_3_bank = 0
 
-    print("\nWelcome to Wheel of Fortune!\n============================\n")
+    if not same_players:
+        print("\nWelcome to Wheel of Fortune!\n============================\n")
 
-    player_1 = Validate_Input("name",'Enter Name for Player 1: ').title()
-    player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
-
-    while player_2.lower() == player_1.lower():  # Error check for duplicate names
-        print()
-        print("Error: Name taken! Pick a different name!\n")
+        player_1 = Validate_Input("name",'Enter Name for Player 1: ').title()
         player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
 
-    player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()  # Error check for duplicate names
+        while player_2.lower() == player_1.lower():  # Error check for duplicate names
+            print()
+            print("Error: Name taken! Pick a different name!\n")
+            player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
 
-    while player_3.lower() == player_1.lower() or player_3.lower() == player_2.lower():
-        print()
-        print("Error: Name taken! Pick a different name!\n")
-        player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+        player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()  # Error check for duplicate names
 
-    player_list = [player_1, player_2, player_3]
+        while player_3.lower() == player_1.lower() or player_3.lower() == player_2.lower():
+            print()
+            print("Error: Name taken! Pick a different name!\n")
+            player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+
+        player_list = [player_1, player_2, player_3]
 
     f = open('words_alpha.txt')
     dict_lines = f.read().splitlines()
     f.close()
-    correct_word = random.choice(dict_lines)
+
+    dictionary_set = set()
+
+    for line in dict_lines:
+        dictionary_set.add(line)
+
+    dictionary_set = dictionary_set - previous_words
+
+    correct_word = random.choice(tuple(dictionary_set))
+    previous_words.add(correct_word)
     game_board = []
 
     for letter in correct_word:
@@ -238,9 +250,9 @@ def Round():
 
 def Loop_Round():
     global current_player
-    start_round = False
-    while start_round == False:
-        start_round = Round()
+    end_round = False
+    while end_round == False:
+        end_round = Round()
 
 
 def Options_Menu():
@@ -292,12 +304,30 @@ def Options_Menu():
         Loop_Round()
 
 
-Game_Setup()
+
 
 
 # Round 1
+Game_Setup(same_players = False)
+print("Round 1:\n==========")
+print("Starting player chosen randomly.\n")
 current_player = random.choice(player_list)
 print(f"{current_player} goes first!\n")
+
+end_round = False
+
+Loop_Round()
+
+while end_round == False:
+    Options_Menu()
+
+winner = current_player
+round_1_winnings = bank_list
+
+# Round 2
+print("\nRound 2:\n==========")
+print(f"Since {winner} won the last round. They go first!\n")
+Game_Setup(same_players = True)
 
 end_round = False
 
