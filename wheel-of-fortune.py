@@ -19,7 +19,7 @@ def Validate_Input(input_type, message):
             if any(c.isnumeric() for c in consonant) or len(consonant) > 1:
                 print()
                 print("Error: Invalid Input!\n")
-            elif consonant not in ['aeiou']:
+            elif consonant in ['a','e','i','o','u']:
                 print()
                 print("Error: Vowel inputted!\n")
             else:
@@ -35,6 +35,7 @@ def Game_Setup():
     global player_1_bank
     global player_2_bank
     global player_3_bank 
+    global game_board
 
 
     player_1_bank = 0
@@ -64,45 +65,35 @@ def Game_Setup():
     dict_lines = f.read().splitlines()
     f.close()
     correct_word = random.choice(dict_lines)
-    empty_board = []
+    game_board = []
 
     for letter in correct_word:
         if letter.isalpha():
-            empty_board.append("_")
+            game_board.append("_")
         else:
-            empty_board.append(letter)
+            game_board.append(letter)
+
 
     print("\nSolve this puzzle:\n")
-    print(' '.join(empty_board))
+    print(' '.join(game_board))
     print()
 
 
 
-def Validate_Guess(choice):
+def Update_Board(input_type, current_player, guess):
 
-    # Ask user to guess a valid word (if invalid prompt them again)
-    if choice == 'word':
-        guess = input("Guess a word: ").lower()
-        print()
-        valid_word = guess in dict_lines
-        while valid_word == False:
-            print(f'Invalid word: "{guess}".', end = ' ')
-            guess = input('Guess a word: ').lower()
-            print()
-            valid_word = guess in dict_lines
-        return guess, choice
+    if input_type == 'letter':
+        if any(letter in correct_word for letter in guess):
+            print("Correct!\n")
+            for i in range(0,len(correct_word)):
+                if guess == list(correct_word)[i]:
+                    game_board[i] = guess
+        else:
+            print("Incorrect!\n")
+            current_player = Next_Player(current_player)
     
-    # Ask user to guess a valid letter (if invalid prompt them again)
-    else:
-        guess = input("Guess a letter: ").lower()
-        print()
-        valid_letter = guess.isalpha()
-        while (valid_letter == False or len(guess) != 1) :
-            print(f'Invalid letter: "{guess}".', end = ' ')
-            guess = input('Guess a letter: ').lower()
-            print()
-            valid_letter = guess.isalpha()
-        return guess, choice
+    print(' '.join(game_board))
+    return current_player
 
 
 
@@ -145,9 +136,13 @@ def Round_Start(current_player):
     wheel_spin = Spin_Wheel(current_player)
     if isinstance(wheel_spin,str):
         current_player = Next_Player(current_player)
-        return current_player, False
+        return current_player, False, wheel_spin
     else:
-        return current_player, True
+        consonant_guess = Validate_Input('consonant','Guess a consonant: ')
+        current_player = Update_Board('letter', current_player, consonant_guess)
+
+
+        return current_player, True, wheel_spin
         
 # def Round(current_player):
 
@@ -171,8 +166,9 @@ print(f"{current_player} goes first!\n")
 start_round = False
 
 while start_round == False:
-    current_player, start_round = Round_Start(current_player)
-    print(current_player)
+    current_player, start_round, wheel_spin = Round_Start(current_player)
+
+
 
 # while solved == False:
 #     current_player, solved = Round(current_player)
