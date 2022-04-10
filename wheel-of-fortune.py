@@ -233,6 +233,9 @@ def Spin_Wheel(final_round = False):
 
 def Round():
     global current_player
+    global game_board
+    global end_round
+
     wheel_spin = Spin_Wheel()
     if isinstance(wheel_spin,str):
         if wheel_spin == 'Bankrupt!':
@@ -283,6 +286,8 @@ def Options_Menu():
             print("The word was ", end = "")
             print(' '.join(game_board))
             end_round = True
+        elif '_' not in game_board:
+            end_round = True
         else:
             print("Sorry. That is incorrect!\n")
             print(' '.join(game_board))
@@ -299,6 +304,9 @@ def Options_Menu():
         elif vowels.issubset(letter_guesses):
             print()
             print("Error: No vowels left!\n")
+        elif '_' not in game_board:
+            print()
+            print("Error: Board is full!\n")
         else:
             count = -1
             Player_Bank(250)
@@ -308,11 +316,15 @@ def Options_Menu():
             if next_player != current_player:
                 Loop_Round()
 
-    if option == 3:
-        print()
-        print(' '.join(game_board))
-        print()
-        Loop_Round()
+    else:
+        if '_' not in game_board:
+            print()
+            print("Error: Board is full!\n")     
+        else:   
+            print()
+            print(' '.join(game_board))
+            print()
+            Loop_Round()
 
 
 previous_words = set()
