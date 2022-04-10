@@ -17,33 +17,27 @@ def Validate_Input(input_type, message):
                 print("Error: Name is too long! (Enter a name with 20 characters or less!)\n")
             else:
                 return player_name
-        elif input_type == "consonant":
-            consonant = input(message).lower()
-            if any(c.isnumeric() for c in consonant) or len(consonant) > 1:
+        elif input_type == "consonant" or input_type == "vowel":
+            guess = input(message).lower()
+            if any(c.isnumeric() for c in guess) or len(guess) > 1:
                 print()
                 print("Error: Invalid Input!\n")
-            elif consonant in ['a','e','i','o','u']:
+            elif guess in letter_guesses:
                 print()
-                print("Error: That's a vowel! \n")
-            elif consonant in letter_guesses:
-                print()
-                print("Error: Consonant has been guessed already!\n")
+                guess = guess.upper()
+                print(f"Error: {guess} has been guessed already!\n")
+            elif input_type == "consonant":
+                if guess in ['a','e','i','o','u']:
+                    print()
+                    print("Error: That's a vowel! \n")
+                else:
+                    return guess
             else:
-                return consonant
-        elif input_type == "vowel":
-            vowel = input(message).lower()
-            if any(c.isnumeric() for c in vowel) or len(vowel) > 1:
-                print()
-                print("Error: Invalid Input!\n")
-            elif vowel not in ['a','e','i','o','u']:
-                print()
-                print("Error: That's a consonant! \n")
-            elif vowel in letter_guesses:
-                print()
-                print("Error: Vowel has been guessed already!\n")
-
-            else:
-                return vowel
+                if guess not in ['a','e','i','o','u']:
+                    print()
+                    print("Error: That's a consonant! \n")
+                else:
+                    return guess
         elif input_type == "option":
             while valid_input == False:
                 try:
