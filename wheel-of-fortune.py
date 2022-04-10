@@ -19,7 +19,7 @@ def Validate_Input(input_type, message):
                 return player_name
         elif input_type == "consonant" or input_type == "vowel":
             guess = input(message).lower()
-            if any(c.isnumeric() for c in guess) or len(guess) > 1:
+            if any(c.isnumeric() for c in guess) or len(guess) > 1 or guess == "":
                 print()
                 print("Error: Invalid Input!\n")
             elif guess in letter_guesses:
@@ -73,12 +73,14 @@ def Game_Setup(same_players = True):
     global player_3_bank 
     global game_board
     global letter_guesses
+    global count
 
 
     player_1_bank = 0
     player_2_bank = 0
     player_3_bank = 0
 
+    count = 0
 
     if not same_players:
         print("\nWelcome to Wheel of Fortune!\n============================\n")
@@ -167,7 +169,6 @@ def Update_Board(input_type, guess):
     
 
 
-
 def Next_Player():
     
     global current_player
@@ -190,19 +191,22 @@ def Player_Bank(prize):
     global bank_list
     global count
 
+    
+
     player = player_list.index(current_player)
+
 
     if player == 0:
         player_1_bank += prize*count
-        if count == 0:
+        if prize == 0:
             player_1_bank = 0
     elif player == 1:
         player_2_bank += prize*count
-        if count == 0:
+        if prize == 0:
             player_2_bank = 0
     else:
         player_3_bank += prize*count
-        if count == 0:
+        if prize == 0:
             player_3_bank = 0
 
     bank_list = [player_1_bank, player_2_bank, player_3_bank]
@@ -268,7 +272,20 @@ def Options_Menu():
     global current_player
     global game_board
     global count
-    
+    global correct_word
+
+    # Exception for board state where no consonants remain
+    #####################################################
+    board = set(''.join(game_board).lower())
+    word = set(correct_word)
+    remaining_letters = word - board
+    consonant_count = 0
+    vowels = set('aeiou')
+    for i in remaining_letters:
+        if i not in vowels:
+            consonant_count += 1
+    ######################################################
+
     print()
     print(f"OK {current_player}! What would you like to do?")
     print("=================================================\n")
@@ -277,7 +294,7 @@ def Options_Menu():
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
     print()
-    
+
     if option == 1:
         guess = Validate_Input("word", "Guess a word: ")
         print()
@@ -289,15 +306,30 @@ def Options_Menu():
             print(' '.join(game_board))
             end_round = True
 
+        elif consonant_count == 0:
+            print("No consonants remain!\n")
+            if guess.lower() != correct_word.lower():
+                print("Sorry. That is incorrect!\n")
+                Next_Player()
+                print(' '.join(game_board))
+                Options_Menu()
+            else:
+                print(f"{current_player} wins the round!\n")
+                print("The word was ", end = "")
+                print(' '.join(game_board))
+                end_round = True
+
         elif '_' not in game_board:
             if guess.lower() != correct_word.lower():
                 print("Sorry. That is incorrect!\n")
                 Next_Player()
-
-            print(f"{current_player} wins the round!\n")
-            print("The word was ", end = "")
-            print(' '.join(game_board))
-            end_round = True
+                print(' '.join(game_board))
+                Options_Menu()
+            else:
+                print(f"{current_player} wins the round!\n")
+                print("The word was ", end = "")
+                print(' '.join(game_board))
+                end_round = True
         
         else:
             print("Sorry. That is incorrect!\n")
@@ -324,13 +356,18 @@ def Options_Menu():
             vowel = Validate_Input("vowel", "Buy a vowel: ")
             next_player = current_player
             Update_Board('letter',vowel)
-            if next_player != current_player:
+            if consonant_count == 0:
+                print('No more consonants left!\n')
+
+            elif next_player != current_player:
                 Loop_Round()
 
     else:
         if '_' not in game_board:
             print()
-            print("Error: Board is full!\n")     
+            print("Error: Board is full!\n")
+        elif consonant_count == 0:
+            print('No more consonants left!\n')
         else:   
             print()
             print(' '.join(game_board))
