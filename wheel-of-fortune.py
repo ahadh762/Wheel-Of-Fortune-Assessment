@@ -43,7 +43,7 @@ def Validate_Input(input_type, message):
                     print("Error: Invalid input!\n")
                     continue        
         elif input_type == "word":
-            word = input(message)
+            word = input(message).lower()
             if any(c.isnumeric() for c in word):
                 print()
                 print("Error: Invalid Input!\n")
@@ -167,11 +167,11 @@ def Player_Bank(current_player, prize, count = -1):
     elif player == 1:
         player_2_bank += prize*count
         if count == -1:
-            player_1_bank = 0
+            player_2_bank = 0
     else:
         player_3_bank += prize*count
         if count == -1:
-            player_1_bank = 0
+            player_3_bank = 0
 
     bank_list = [player_1_bank, player_2_bank, player_3_bank]
     print("\nPlayer Totals:\n")
@@ -219,7 +219,6 @@ def Round(current_player):
             return current_player, False
 
 
-
 def Loop_Round(current_player):
     start_round = False
     while start_round == False:
@@ -237,7 +236,19 @@ def Options_Menu(current_player):
     option = Validate_Input("option", 'Choose an option: ')
     print()
     if option == 1:
-        end_round = True
+        guess = Validate_Input("word", "Guess a word: ")
+        print()
+        if guess.lower() == correct_word.lower():
+            game_board = list(correct_word.upper())
+            print(f"{current_player} wins the round!\n")
+            print("The word was ", end = "")
+            print(' '.join(game_board))
+            end_round = True
+        else:
+            print("Sorry. That is incorrect!\n")
+            current_player = Next_Player(current_player)
+            Loop_Round(current_player)
+
     if option == 3:
         print()
         print(' '.join(game_board))
