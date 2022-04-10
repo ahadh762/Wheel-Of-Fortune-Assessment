@@ -21,7 +21,7 @@ def Validate_Input(input_type, message):
                 print("Error: Invalid Input!\n")
             elif consonant in ['a','e','i','o','u']:
                 print()
-                print("Error: Vowel inputted!\n")
+                print("Error: That's a vowel! \n")
             elif consonant in game_board:
                 print()
                 print("Error: Letter has been guessed already")
@@ -152,24 +152,33 @@ def Next_Player(current_player):
     return next_player
 
 
-def Player_Bank(current_player, prize, count):
+def Player_Bank(current_player, prize, count = -1):
     global player_1_bank
     global player_2_bank
     global player_3_bank
+    global bank_list
 
     player = player_list.index(current_player)
 
     if player == 0:
         player_1_bank += prize*count
+        if count == -1:
+            player_1_bank = 0
     elif player == 1:
         player_2_bank += prize*count
+        if count == -1:
+            player_1_bank = 0
     else:
         player_3_bank += prize*count
+        if count == -1:
+            player_1_bank = 0
 
-    print("\nPlayer Totals:")
-    print(f"{player_list[0]}: ${player_1_bank}")
-    print(f"{player_list[1]}: ${player_2_bank}")
-    print(f"{player_list[2]}: ${player_3_bank}")
+    bank_list = [player_1_bank, player_2_bank, player_3_bank]
+    print("\nPlayer Totals:\n")
+
+    for i in range(len(bank_list)):
+        print(f"{player_list[i]}: ${bank_list[i]}")
+
     print()
 
 
@@ -192,6 +201,9 @@ def Round(current_player):
 
     wheel_spin = Spin_Wheel(current_player)
     if isinstance(wheel_spin,str):
+        if wheel_spin == 'Bankrupt!':
+            Player_Bank(current_player,0)
+
         current_player = Next_Player(current_player)
         print(' '.join(game_board))
         print()
