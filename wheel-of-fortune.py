@@ -172,6 +172,7 @@ def Player_Bank(current_player, prize, count):
     print(f"{player_list[0]}: ${player_1_bank}")
     print(f"{player_list[1]}: ${player_2_bank}")
     print(f"{player_list[2]}: ${player_3_bank}")
+    print()
 
 
 def Spin_Wheel(player, final_round = False):
@@ -187,7 +188,34 @@ def Spin_Wheel(player, final_round = False):
 
         return wheel_value
 
+
+def Round(current_player):
+
+    wheel_spin = Spin_Wheel(current_player)
+    if isinstance(wheel_spin,str):
+        current_player = Next_Player(current_player)
+        return current_player, False
+    else:
+        consonant_guess = Validate_Input('consonant','Guess a consonant: ')
+        next_player = current_player
+        current_player, count = Update_Board('letter', current_player, consonant_guess)
+        if next_player == current_player:
+            Player_Bank(current_player, wheel_spin, count)
+            return current_player, True
+        else:
+            return current_player, False
+
+    # elif round_number == 1:
+
+
+def Loop_Round(current_player):
+    start_round = False
+    while start_round == False:
+        current_player, start_round = Round(current_player)
+
+
 def Options_Menu(current_player):
+    global end_round
     print()
     print(f"OK {current_player}! What would you like to do?")
     print("=================================================\n")
@@ -195,30 +223,11 @@ def Options_Menu(current_player):
     print("2. Buy a Vowel (Lose $250)\n")
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
+    
+    if option == 1:
+        end_round = True
     if option == 3:
-        Spin_Again(current_player)
-
-
-def Round_Start(current_player, round_number = 0):
-    if round_number == 0:
-        wheel_spin = Spin_Wheel(current_player)
-        if isinstance(wheel_spin,str):
-            current_player = Next_Player(current_player)
-            return current_player, False, wheel_spin
-        else:
-            consonant_guess = Validate_Input('consonant','Guess a consonant: ')
-            next_player = current_player
-            current_player, count = Update_Board('letter', current_player, consonant_guess)
-            if next_player == current_player:
-                Player_Bank(current_player, wheel_spin, count)
-                return current_player, True
-            else:
-                return current_player, False
-
-def Spin_Again(current_player):
-    start_round = False
-    while start_round == False:
-        current_player, start_round = Round_Start(current_player)
+        Loop_Round(current_player)
 
         
 # def Round(current_player):
@@ -234,17 +243,14 @@ def Spin_Again(current_player):
 
 Game_Setup()
 
-solved = False
 
 # Round 1
 current_player = random.choice(player_list)
 print(f"{current_player} goes first!\n")
 
-start_round = False
 end_round = False
 
-while start_round == False:
-    current_player, start_round = Round_Start(current_player)
+Loop_Round(current_player)
 
 while end_round == False:
     Options_Menu(current_player)
