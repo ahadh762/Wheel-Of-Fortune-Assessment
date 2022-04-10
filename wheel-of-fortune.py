@@ -7,6 +7,7 @@ def Validate_Input(input_type, message):
     valid_input = False
 
     while not valid_input:
+        time.sleep(0.2)
         if input_type == "name":
             player_name = input(message)
             if any(c.isnumeric() for c in player_name) or player_name == "":
@@ -63,7 +64,7 @@ def Validate_Input(input_type, message):
                 return word
 
 
-def Game_Setup(same_players = True):
+def Game_Setup(same_players = True, final_round = False):
     global correct_word
     global player_list
     global dict_lines
@@ -76,32 +77,34 @@ def Game_Setup(same_players = True):
     global consonant_count
 
 
-    player_1_bank = 0
-    player_2_bank = 0
-    player_3_bank = 0
+    if final_round == False:
 
-    consonant_count = 0
-    letter_count = 0
+        player_1_bank = 0
+        player_2_bank = 0
+        player_3_bank = 0
 
-    if not same_players:
-        print("\nWelcome to Wheel of Fortune!\n============================\n")
+        consonant_count = 0
+        letter_count = 0
+        
+        if not same_players:
+            print("\nWelcome to Wheel of Fortune!\n============================\n")
 
-        player_1 = Validate_Input("name",'Enter Name for Player 1: ').title()
-        player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
-
-        while player_2.lower() == player_1.lower():  # Error check for duplicate names
-            print()
-            print("Error: Name taken! Pick a different name!\n")
+            player_1 = Validate_Input("name",'Enter Name for Player 1: ').title()
             player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
 
-        player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()  # Error check for duplicate names
+            while player_2.lower() == player_1.lower():  # Error check for duplicate names
+                print()
+                print("Error: Name taken! Pick a different name!\n")
+                player_2 = Validate_Input("name",'Enter Name for Player 2: ').title()
 
-        while player_3.lower() == player_1.lower() or player_3.lower() == player_2.lower():
-            print()
-            print("Error: Name taken! Pick a different name!\n")
-            player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+            player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()  # Error check for duplicate names
 
-        player_list = [player_1, player_2, player_3]
+            while player_3.lower() == player_1.lower() or player_3.lower() == player_2.lower():
+                print()
+                print("Error: Name taken! Pick a different name!\n")
+                player_3 = Validate_Input("name",'Enter Name for Player 3: ').title()
+
+            player_list = [player_1, player_2, player_3]
 
     f = open('words_alpha.txt')
     dict_lines = f.read().splitlines()
@@ -134,6 +137,7 @@ def Game_Setup(same_players = True):
 
 
 def Update_Board(input_type, guess):
+    time.sleep(0.2)
     global game_board
     global current_player
     global letter_guesses
@@ -197,6 +201,7 @@ def Consonant_Count():
 
 
 def Player_Bank(prize, round_end = False):
+    time.sleep(0.2)
     global player_1_bank
     global player_2_bank
     global player_3_bank
@@ -241,8 +246,11 @@ def Spin_Wheel(final_round = False):
             print(f"{current_player} spins the wheel, and it lands on ${wheel_value}!\n")
         else:
             print(f"{current_player} spins the wheel, and it lands on {wheel_value}\n")
+    else:
+        wheel = [10000,15000,20000,30000,40000,50000,100000]
+        wheel_value = random.choice(wheel)
 
-        return wheel_value
+    return wheel_value
 
 
 def Round():
@@ -381,6 +389,7 @@ previous_words = set()
 
 
 # Round 1
+
 Game_Setup(same_players = False)
 print("Round 1:\n==========")
 print("Starting player chosen randomly.\n")
@@ -395,8 +404,9 @@ while end_round == False:
     time.sleep(0.1)
     Options_Menu()
 
-
+time.sleep(0.2)
 print(f"\n{current_player} gets $1000 added to their winnings!\n")
+time.sleep(0.2)
 print("\nRound 1 Winnings:\n=================")
 
 count = 1
@@ -406,7 +416,9 @@ round_1_winnings = bank_list
 
 
 # Round 2
+time.sleep(0.5)
 print("\nRound 2:\n==========")
+time.sleep(0.2)
 print(f"Since {current_player} won the last round. They go first!\n")
 Game_Setup(same_players = True)
 
@@ -418,7 +430,9 @@ while end_round == False:
     time.sleep(0.1)
     Options_Menu()
 
+time.sleep(0.2)
 print(f"\n{current_player} gets $1000 added to their winnings!\n")
+time.sleep(0.2)
 print("\nRound 2 Winnings:\n=================")
 
 letter_count = 1
@@ -436,13 +450,20 @@ for i in range(len(round_1_winnings)):
 max_winnings = max(total_winnings)
 winner = total_winnings.index(max_winnings)
 overall_winner = player_list[winner]
+current_player = overall_winner
 
+
+# Show Overall Winnings for each player across both rounds
 time.sleep(0.1)
 print("\nOverall Winnings:\n=================\n")
 for i in range(len(total_winnings)):
     print(f"{player_list[i]}: ${total_winnings[i]}")
 
-
 print(f"\n{overall_winner} has the most money with ${max_winnings}!\n")
 print("They will advance to the Final Round!\n")
+
+print("Final Round:\n==========")
+Game_Setup(same_players = False, final_round = True)
+mystery_prize = Spin_Wheel(final_round = True)
+print(f"\n{current_player}. You have 10 seconds. Good luck!:\n=================\n")
 
