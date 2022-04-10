@@ -116,6 +116,7 @@ def Game_Setup(same_players = True):
 
     correct_word = random.choice(tuple(dictionary_set))
     previous_words.add(correct_word)
+    print(previous_words)
     game_board = []
 
     for letter in correct_word:
@@ -194,7 +195,7 @@ def Consonant_Count():
             consonant_count += 1
 
 
-def Player_Bank(prize):
+def Player_Bank(prize, round_end = False):
     global player_1_bank
     global player_2_bank
     global player_3_bank
@@ -217,7 +218,9 @@ def Player_Bank(prize):
             player_3_bank = 0
 
     bank_list = [player_1_bank, player_2_bank, player_3_bank]
-    print("\nPlayer Banks:\n===========\n")
+
+    if round_end == False:
+        print("\nPlayer Banks:\n===========\n")
 
     for i in range(len(bank_list)):
         print(f"{player_list[i]}: ${bank_list[i]}")
@@ -286,7 +289,7 @@ def Options_Menu():
     print()
     print(f"OK {current_player}! What would you like to do?")
     print("=================================================\n")
-    print("1. I'd like to solve the puzzle!\n")
+    print("1. I'd like to Solve the Puzzle!\n")
     print("2. Buy a Vowel (Lose $250)\n")
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
@@ -389,12 +392,19 @@ Loop_Round()
 while end_round == False:
     Options_Menu()
 
-winner = current_player
+
+print(f"\n{current_player} gets $1000 added to their winnings!\n")
+print("\nRound 1 Winnings:\n=================")
+
+count = 1
+Player_Bank(1000,round_end = True)
+
 round_1_winnings = bank_list
+
 
 # Round 2
 print("\n\nRound 2:\n==========")
-print(f"Since {winner} won the last round. They go first!\n")
+print(f"Since {current_player} won the last round. They go first!\n")
 Game_Setup(same_players = True)
 
 end_round = False
@@ -404,7 +414,14 @@ Loop_Round()
 while end_round == False:
     Options_Menu()
 
+print(f"\n{current_player} gets $1000 added to their winnings!\n")
+print("\nRound 2 Winnings:\n=================")
+
+letter_count = 1
+Player_Bank(1000,round_end = True)
+
 round_2_winnings = bank_list
+
 
 # Find winner across all 3 rounds
 total_winnings = []
@@ -414,6 +431,13 @@ for i in range(len(round_1_winnings)):
 
 max_winnings = max(total_winnings)
 winner = total_winnings.index(max_winnings)
-
 overall_winner = player_list[winner]
+
+print("\nOverall Winnings:\n=================\n")
+for i in range(len(total_winnings)):
+    print(f"{player_list[i]}: ${total_winnings[i]}")
+
+
+print(f"\n{overall_winner} has the most money with ${max_winnings}!\n")
+print("They will advance to the Final Round!\n")
 
