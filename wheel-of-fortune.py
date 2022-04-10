@@ -146,7 +146,7 @@ def Update_Board(input_type, guess):
                     game_board[i] = guess.upper()
         else:
             print("\nIncorrect!\n")
-            current_player = Next_Player()
+            Next_Player()
 
         letter_guesses.add(guess)
 
@@ -158,7 +158,7 @@ def Update_Board(input_type, guess):
             return current_player, 1
         else:
             print("Incorrect!\n")
-            current_player = Next_Player()
+            Next_Player()
             return current_player, 0
 
     print(' '.join(game_board))
@@ -168,14 +168,17 @@ def Update_Board(input_type, guess):
 
 
 def Next_Player():
+    
+    global current_player
+
     position = player_list.index(current_player)
     if position == 0 or position == 1:
-        next_player = player_list[position + 1]
-        print(f"{next_player} goes next!\n")
+        current_player = player_list[position + 1]
+        print(f"{current_player} goes next!\n")
     else:
-        next_player = player_list[0]
-        print(f"{next_player} goes next!\n")
-    return next_player
+        current_player = player_list[0]
+        print(f"{current_player} goes next!\n")
+
 
 
 def Player_Bank(prize, count):
@@ -200,7 +203,7 @@ def Player_Bank(prize, count):
             player_3_bank = 0
 
     bank_list = [player_1_bank, player_2_bank, player_3_bank]
-    print("\nPlayer Totals:\n")
+    print("\nPlayer Banks:\n===========\n")
 
     for i in range(len(bank_list)):
         print(f"{player_list[i]}: ${bank_list[i]}")
@@ -231,7 +234,7 @@ def Round():
         if wheel_spin == 'Bankrupt!':
             Player_Bank(0,0)
 
-        current_player = Next_Player()
+        Next_Player()
         print(' '.join(game_board))
         print()
         return False
@@ -279,7 +282,7 @@ def Options_Menu():
             print("Sorry. That is incorrect!\n")
             print(' '.join(game_board))
             print()
-            current_player = Next_Player()
+            Next_Player()
             Loop_Round()
 
     elif option == 2:
@@ -323,7 +326,7 @@ winner = current_player
 round_1_winnings = bank_list
 
 # Round 2
-print("\nRound 2:\n==========")
+print("\n\nRound 2:\n==========")
 print(f"Since {winner} won the last round. They go first!\n")
 Game_Setup(same_players = True)
 
