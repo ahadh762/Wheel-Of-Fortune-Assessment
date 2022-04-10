@@ -73,14 +73,16 @@ def Game_Setup(same_players = True):
     global player_3_bank 
     global game_board
     global letter_guesses
-    global count
+    global letter_count
+    global consonant_count
 
 
     player_1_bank = 0
     player_2_bank = 0
     player_3_bank = 0
 
-    count = 0
+    consonant_count = 0
+    letter_count = 0
 
     if not same_players:
         print("\nWelcome to Wheel of Fortune!\n============================\n")
@@ -116,7 +118,6 @@ def Game_Setup(same_players = True):
 
     correct_word = random.choice(tuple(dictionary_set))
     previous_words.add(correct_word)
-    print(previous_words)
     game_board = []
 
     for letter in correct_word:
@@ -137,15 +138,15 @@ def Update_Board(input_type, guess):
     global game_board
     global current_player
     global letter_guesses
-    global count
+    global letter_count
 
     if input_type == 'letter':
-        count = 0
+        letter_count = 0
         if any(letter in correct_word for letter in guess):
             print("\nCorrect!\n")
             for i in range(0,len(correct_word)):
                 if guess == list(correct_word)[i]:
-                    count+=1
+                    letter_count+=1
                     game_board[i] = guess.upper()
         else:
             print("\nIncorrect!\n")
@@ -189,7 +190,7 @@ def Player_Bank(prize):
     global player_2_bank
     global player_3_bank
     global bank_list
-    global count
+    global letter_count
 
     
 
@@ -197,15 +198,15 @@ def Player_Bank(prize):
 
 
     if player == 0:
-        player_1_bank += prize*count
+        player_1_bank += prize*letter_count
         if prize == 0:
             player_1_bank = 0
     elif player == 1:
-        player_2_bank += prize*count
+        player_2_bank += prize*letter_count
         if prize == 0:
             player_2_bank = 0
     else:
-        player_3_bank += prize*count
+        player_3_bank += prize*letter_count
         if prize == 0:
             player_3_bank = 0
 
@@ -267,15 +268,11 @@ def Loop_Round():
         end_round = Round()
 
 
-def Options_Menu():
-    global end_round
-    global current_player
+def Consonant_Count():
     global game_board
-    global count
     global correct_word
+    global consonant_count
 
-    # Exception for board state where no consonants remain
-    #####################################################
     board = set(''.join(game_board).lower())
     word = set(correct_word)
     remaining_letters = word - board
@@ -284,7 +281,19 @@ def Options_Menu():
     for i in remaining_letters:
         if i not in vowels:
             consonant_count += 1
-    ######################################################
+
+
+
+def Options_Menu():
+    global end_round
+    global current_player
+    global game_board
+    global letter_count
+    global correct_word
+    global consonant_count
+    
+    Consonant_Count() # Prevents spinning wheel when no consonants left to guess
+
 
     print()
     print(f"OK {current_player}! What would you like to do?")
@@ -351,7 +360,7 @@ def Options_Menu():
             print()
             print("Error: Board is full!\n")
         else:
-            count = -1
+            letter_count = -1
             Player_Bank(250)
             vowel = Validate_Input("vowel", "Buy a vowel: ")
             next_player = current_player
