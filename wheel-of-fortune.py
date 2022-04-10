@@ -72,16 +72,11 @@ def Game_Setup():
         else:
             empty_board.append(letter)
 
-    print("\nSolve the puzzle:\n")
+    print("\nSolve this puzzle:\n")
     print(' '.join(empty_board))
     print()
 
 
-    
-
-# Function Validate_Guess takes input choice and prompts user for either
-# a word (if choice = 0) or a letter (if choice = 1) and ensures they are valid
-# Returns the guess (letter or word) and choice (0 or 1)
 
 def Validate_Guess(choice):
 
@@ -111,8 +106,17 @@ def Validate_Guess(choice):
 
 
 
-def Next_Player():
-    return player_list
+def Next_Player(current_player):
+    position = player_list.index(current_player)
+    if position == 0 or position == 1:
+        print(f"{current_player} loses their turn!\n")
+        next_player = player_list[position + 1]
+        print(f"{next_player} goes next!\n")
+    else:
+        print(f"{current_player} loses their turn!\n")
+        next_player = player_list[0]
+        print(f"{next_player} goes next!\n")
+    return next_player
 
 
 def Player_Bank(current_player, prize):
@@ -126,25 +130,50 @@ def Player_Bank(current_player, prize):
 
 def Spin_Wheel(player, final_round = False):
     if not final_round:
-        wheel = ['Lose A Turn!', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt!',\
+        wheel = ['Lose a Turn!', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt!',\
             750, 800, 300, 200, 100, 500, 400, 300, 200, 850, 700, 200, 150, 450]
         wheel_value = random.choice(wheel)
 
         if isinstance(wheel_value,int):
-            print(f"{player} goes first!\n{player} spins the wheel, and it lands on ${wheel_value}!")
+            print(f"{player} spins the wheel, and it lands on ${wheel_value}!")
         else:
-            print(f"{player} goes first!\n{player} spins the wheel, and it lands on {wheel_value}!")
+            print(f"{player} spins the wheel, and it lands on {wheel_value}")
 
         return wheel_value
 
+def Round_Start(current_player):
+    wheel_spin = Spin_Wheel(current_player)
+    if isinstance(wheel_spin,str):
+        current_player = Next_Player(current_player)
+        return current_player, False
+    else:
+        return current_player, True
+        
+# def Round(current_player):
 
-def Round(round_number):
-    if round_number == 1:
-        current_player = random.choice(player_list)
-        wheel_spin = Spin_Wheel(current_player)
 
+#     keep_going = True
+    
+#     while keep_going == True:
+#     puzzle_solved = True
 
-        print(current_player)
+#     return current_player, puzzle_solved
+
 
 Game_Setup()
-Round(1)
+
+solved = False
+
+# Round 1
+current_player = random.choice(player_list)
+print(f"{current_player} goes first!\n")
+
+start_round = False
+
+while start_round == False:
+    current_player, start_round = Round_Start(current_player)
+    print(current_player)
+
+# while solved == False:
+#     current_player, solved = Round(current_player)
+
