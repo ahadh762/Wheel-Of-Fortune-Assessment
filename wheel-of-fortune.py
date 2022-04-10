@@ -1,4 +1,5 @@
 import random
+import time
 
 def Validate_Input(input_type, message):
     global letter_guesses
@@ -273,6 +274,7 @@ def Loop_Round():
     global current_player
     end_round = False
     while end_round == False:
+        time.sleep(0.1)
         end_round = Round()
 
 
@@ -390,6 +392,7 @@ end_round = False
 Loop_Round()
 
 while end_round == False:
+    time.sleep(0.1)
     Options_Menu()
 
 
@@ -403,7 +406,7 @@ round_1_winnings = bank_list
 
 
 # Round 2
-print("\n\nRound 2:\n==========")
+print("\nRound 2:\n==========")
 print(f"Since {current_player} won the last round. They go first!\n")
 Game_Setup(same_players = True)
 
@@ -412,6 +415,7 @@ end_round = False
 Loop_Round()
 
 while end_round == False:
+    time.sleep(0.1)
     Options_Menu()
 
 print(f"\n{current_player} gets $1000 added to their winnings!\n")
@@ -433,6 +437,7 @@ max_winnings = max(total_winnings)
 winner = total_winnings.index(max_winnings)
 overall_winner = player_list[winner]
 
+time.sleep(0.1)
 print("\nOverall Winnings:\n=================\n")
 for i in range(len(total_winnings)):
     print(f"{player_list[i]}: ${total_winnings[i]}")
