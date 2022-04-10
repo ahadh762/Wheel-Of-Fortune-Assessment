@@ -115,13 +115,13 @@ def Update_Board(input_type, current_player, guess):
     if input_type == 'letter':
         count = 0
         if any(letter in correct_word for letter in guess):
-            print("Correct!\n")
+            print("\nCorrect!\n")
             for i in range(0,len(correct_word)):
                 if guess == list(correct_word)[i]:
                     count+=1
-                    game_board[i] = guess
+                    game_board[i] = guess.upper()
         else:
-            print("Incorrect!\n")
+            print("\nIncorrect!\n")
             current_player = Next_Player(current_player)
 
     elif input_type == "word":
@@ -144,13 +144,11 @@ def Update_Board(input_type, current_player, guess):
 def Next_Player(current_player):
     position = player_list.index(current_player)
     if position == 0 or position == 1:
-        print(f"{current_player} loses their turn!\n")
         next_player = player_list[position + 1]
-        print(f"{next_player} goes next!\n")
+        print(f"{current_player} loses their turn! {next_player} goes next!\n")
     else:
-        print(f"{current_player} loses their turn!\n")
         next_player = player_list[0]
-        print(f"{next_player} goes next!\n")
+        print(f"{current_player} loses their turn! {next_player} goes next!\n")
     return next_player
 
 
@@ -176,15 +174,16 @@ def Player_Bank(current_player, prize, count):
 
 
 def Spin_Wheel(player, final_round = False):
+
     if not final_round:
         wheel = ['Lose a Turn!', 200, 400, 250, 150, 400, 600, 250, 350, 'Bankrupt!',\
             750, 800, 300, 200, 100, 500, 400, 300, 200, 850, 700, 200, 150, 450]
         wheel_value = random.choice(wheel)
 
         if isinstance(wheel_value,int):
-            print(f"{player} spins the wheel, and it lands on ${wheel_value}!")
+            print(f"{player} spins the wheel, and it lands on ${wheel_value}!\n")
         else:
-            print(f"{player} spins the wheel, and it lands on {wheel_value}")
+            print(f"{player} spins the wheel, and it lands on {wheel_value}\n")
 
         return wheel_value
 
@@ -194,6 +193,8 @@ def Round(current_player):
     wheel_spin = Spin_Wheel(current_player)
     if isinstance(wheel_spin,str):
         current_player = Next_Player(current_player)
+        print(' '.join(game_board))
+        print()
         return current_player, False
     else:
         consonant_guess = Validate_Input('consonant','Guess a consonant: ')
@@ -205,7 +206,6 @@ def Round(current_player):
         else:
             return current_player, False
 
-    # elif round_number == 1:
 
 
 def Loop_Round(current_player):
@@ -223,22 +223,14 @@ def Options_Menu(current_player):
     print("2. Buy a Vowel (Lose $250)\n")
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
-    
+    print()
     if option == 1:
         end_round = True
     if option == 3:
+        print()
+        print(' '.join(game_board))
+        print()
         Loop_Round(current_player)
-
-        
-# def Round(current_player):
-
-
-#     keep_going = True
-    
-#     while keep_going == True:
-#     puzzle_solved = True
-
-#     return current_player, puzzle_solved
 
 
 Game_Setup()
@@ -255,5 +247,3 @@ Loop_Round(current_player)
 while end_round == False:
     Options_Menu(current_player)
 
-# while solved == False:
-#     current_player, solved = Round(current_player)
