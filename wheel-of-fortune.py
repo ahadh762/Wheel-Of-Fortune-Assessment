@@ -83,17 +83,19 @@ def Game_Setup():
 def Update_Board(input_type, current_player, guess):
 
     if input_type == 'letter':
+        count = 0
         if any(letter in correct_word for letter in guess):
             print("Correct!\n")
             for i in range(0,len(correct_word)):
                 if guess == list(correct_word)[i]:
+                    count+=1
                     game_board[i] = guess
         else:
             print("Incorrect!\n")
             current_player = Next_Player(current_player)
     
     print(' '.join(game_board))
-    return current_player
+    return current_player, count
 
 
 
@@ -110,13 +112,24 @@ def Next_Player(current_player):
     return next_player
 
 
-def Player_Bank(current_player, prize):
-    if current_player == 1:
-        player_1_bank += prize
-    elif current_player == 1:
-        player_2_bank += prize
+def Player_Bank(current_player, prize, count):
+    global player_1_bank
+    global player_2_bank
+    global player_3_bank
+
+    player = player_list.index(current_player)
+
+    if player == 0:
+        player_1_bank += prize*count
+    elif player == 1:
+        player_2_bank += prize*count
     else:
-        player_3_bank += prize
+        player_3_bank += prize*count
+
+    print("\nPlayer Totals:")
+    print(f"{player_list[0]}: ${player_1_bank}")
+    print(f"{player_list[1]}: ${player_2_bank}")
+    print(f"{player_list[2]}: ${player_3_bank}")
 
 
 def Spin_Wheel(player, final_round = False):
@@ -140,11 +153,12 @@ def Round_Start(current_player):
     else:
         consonant_guess = Validate_Input('consonant','Guess a consonant: ')
         next_player = current_player
-        current_player = Update_Board('letter', current_player, consonant_guess)
+        current_player, count = Update_Board('letter', current_player, consonant_guess)
         if next_player == current_player:
-            return current_player, True, wheel_spin
+            Player_Bank(current_player, wheel_spin, count)
+            return current_player, True
         else:
-            return current_player, False, wheel_spin
+            return current_player, False
         
 # def Round(current_player):
 
@@ -168,8 +182,7 @@ print(f"{current_player} goes first!\n")
 start_round = False
 
 while start_round == False:
-    current_player, start_round, wheel_spin = Round_Start(current_player)
-
+    current_player, start_round = Round_Start(current_player)
 
 
 # while solved == False:
