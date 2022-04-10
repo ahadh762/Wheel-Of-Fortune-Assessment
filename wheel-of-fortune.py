@@ -139,10 +139,12 @@ def Round_Start(current_player):
         return current_player, False, wheel_spin
     else:
         consonant_guess = Validate_Input('consonant','Guess a consonant: ')
+        next_player = current_player
         current_player = Update_Board('letter', current_player, consonant_guess)
-
-
-        return current_player, True, wheel_spin
+        if next_player == current_player:
+            return current_player, True, wheel_spin
+        else:
+            return current_player, False, wheel_spin
         
 # def Round(current_player):
 
