@@ -277,17 +277,28 @@ def Options_Menu():
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
     print()
+    
     if option == 1:
         guess = Validate_Input("word", "Guess a word: ")
         print()
+
         if guess.lower() == correct_word.lower():
             game_board = list(correct_word.upper())
             print(f"{current_player} wins the round!\n")
             print("The word was ", end = "")
             print(' '.join(game_board))
             end_round = True
+
         elif '_' not in game_board:
+            if guess.lower() != correct_word.lower():
+                print("Sorry. That is incorrect!\n")
+                Next_Player()
+
+            print(f"{current_player} wins the round!\n")
+            print("The word was ", end = "")
+            print(' '.join(game_board))
             end_round = True
+        
         else:
             print("Sorry. That is incorrect!\n")
             print(' '.join(game_board))
