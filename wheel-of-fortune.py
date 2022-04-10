@@ -1,7 +1,6 @@
 import random
 
 def Validate_Input(input_type, message):
-    
     global letter_guesses
 
     valid_input = False
@@ -64,7 +63,6 @@ def Validate_Input(input_type, message):
 
 
 def Game_Setup(same_players = True):
-    
     global correct_word
     global player_list
     global dict_lines
@@ -134,7 +132,6 @@ def Game_Setup(same_players = True):
 
 
 def Update_Board(input_type, guess):
-
     global game_board
     global current_player
     global letter_guesses
@@ -171,7 +168,6 @@ def Update_Board(input_type, guess):
 
 
 def Next_Player():
-    
     global current_player
 
     position = player_list.index(current_player)
@@ -183,19 +179,29 @@ def Next_Player():
         print(f"{current_player} goes next!\n")
 
 
+def Consonant_Count():
+    global game_board
+    global correct_word
+    global consonant_count
+
+    board = set(''.join(game_board).lower())
+    word = set(correct_word)
+    remaining_letters = word - board
+    consonant_count = 0
+    vowels = set('aeiou')
+    for i in remaining_letters:
+        if i not in vowels:
+            consonant_count += 1
+
 
 def Player_Bank(prize):
-
     global player_1_bank
     global player_2_bank
     global player_3_bank
     global bank_list
     global letter_count
 
-    
-
     player = player_list.index(current_player)
-
 
     if player == 0:
         player_1_bank += prize*letter_count
@@ -220,7 +226,6 @@ def Player_Bank(prize):
 
 
 def Spin_Wheel(final_round = False):
-    
     global current_player
 
     if not final_round:
@@ -268,22 +273,6 @@ def Loop_Round():
         end_round = Round()
 
 
-def Consonant_Count():
-    global game_board
-    global correct_word
-    global consonant_count
-
-    board = set(''.join(game_board).lower())
-    word = set(correct_word)
-    remaining_letters = word - board
-    consonant_count = 0
-    vowels = set('aeiou')
-    for i in remaining_letters:
-        if i not in vowels:
-            consonant_count += 1
-
-
-
 def Options_Menu():
     global end_round
     global current_player
@@ -292,8 +281,7 @@ def Options_Menu():
     global correct_word
     global consonant_count
     
-    Consonant_Count() # Prevents spinning wheel when no consonants left to guess
-
+    Consonant_Count() # Prevents players from spinning wheel when no consonants left to guess
 
     print()
     print(f"OK {current_player}! What would you like to do?")
