@@ -1,11 +1,12 @@
 import random
 
-previous_words = set()
-
 def Validate_Input(input_type, message):
+    
+    global letter_guesses
+
     valid_input = False
 
-    while valid_input == False:
+    while not valid_input:
         if input_type == "name":
             player_name = input(message)
             if any(c.isnumeric() for c in player_name) or player_name == "":
@@ -15,7 +16,6 @@ def Validate_Input(input_type, message):
                 print()
                 print("Error: Name is too long! (Enter a name with 20 characters or less!)\n")
             else:
-                valid_input == True
                 return player_name
         elif input_type == "consonant":
             consonant = input(message).lower()
@@ -25,11 +25,10 @@ def Validate_Input(input_type, message):
             elif consonant in ['a','e','i','o','u']:
                 print()
                 print("Error: That's a vowel! \n")
-            elif consonant in game_board:
+            elif consonant in letter_guesses:
                 print()
-                print("Error: Letter has been guessed already")
+                print("Error: Consonant has been guessed already!\n")
             else:
-                valid_input == True
                 return consonant
         elif input_type == "vowel":
             vowel = input(message).lower()
@@ -39,11 +38,11 @@ def Validate_Input(input_type, message):
             elif vowel not in ['a','e','i','o','u']:
                 print()
                 print("Error: That's a consonant! \n")
-            elif vowel in game_board:
+            elif vowel in letter_guesses:
                 print()
-                print("Error: Letter has been guessed already")
+                print("Error: Vowel has been guessed already!\n")
+
             else:
-                valid_input == True
                 return vowel
         elif input_type == "option":
             while valid_input == False:
@@ -53,7 +52,6 @@ def Validate_Input(input_type, message):
                         print()
                         print('Error: Invalid input!\n')
                     else:
-                        valid_value = True
                         return user_input
                 except ValueError:
                     print()
@@ -68,7 +66,6 @@ def Validate_Input(input_type, message):
                 print()
                 print("Error: Not a Word!\n")
             else:
-                valid_input == True
                 return word
 
 
@@ -81,11 +78,13 @@ def Game_Setup(same_players = True):
     global player_2_bank
     global player_3_bank 
     global game_board
+    global letter_guesses
 
 
     player_1_bank = 0
     player_2_bank = 0
     player_3_bank = 0
+
 
     if not same_players:
         print("\nWelcome to Wheel of Fortune!\n============================\n")
@@ -112,6 +111,7 @@ def Game_Setup(same_players = True):
     f.close()
 
     dictionary_set = set()
+    letter_guesses = set()
 
     for line in dict_lines:
         dictionary_set.add(line)
@@ -120,6 +120,7 @@ def Game_Setup(same_players = True):
 
     correct_word = random.choice(tuple(dictionary_set))
     previous_words.add(correct_word)
+    print(previous_words)
     game_board = []
 
     for letter in correct_word:
@@ -139,6 +140,7 @@ def Update_Board(input_type, guess):
 
     global game_board
     global current_player
+    global letter_guesses
 
     if input_type == 'letter':
         count = 0
@@ -151,6 +153,8 @@ def Update_Board(input_type, guess):
         else:
             print("\nIncorrect!\n")
             current_player = Next_Player()
+
+        letter_guesses.add(guess)
 
     elif input_type == "word":
         if guess.lower() == correct_word:
@@ -263,7 +267,7 @@ def Options_Menu():
     print()
     print(f"OK {current_player}! What would you like to do?")
     print("=================================================\n")
-    print("1. Solve the Puzzle\n")
+    print("1. I'd like to solve the puzzle!\n")
     print("2. Buy a Vowel (Lose $250)\n")
     print("3. Spin the Wheel of Fortune!\n")
     option = Validate_Input("option", 'Choose an option: ')
@@ -304,7 +308,7 @@ def Options_Menu():
         Loop_Round()
 
 
-
+previous_words = set()
 
 
 # Round 1
@@ -335,3 +339,20 @@ Loop_Round()
 
 while end_round == False:
     Options_Menu()
+
+round_2_winnings = bank_list
+
+# Find winner across all 3 rounds
+total_winnings = []
+
+for i in range(len(round_1_winnings)):
+    total_winnings.append(round_1_winnings[i] + round_2_winnings[i])
+
+max_winnings = max(total_winnings)
+winner = total_winnings.index(max_winnings)
+
+
+
+overall_winner = player_list[winner]
+
+#
