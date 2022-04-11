@@ -1,7 +1,8 @@
 import random
 import time
+from threading import Timer
 
-def Validate_Input(input_type, message):
+def Validate_Input(input_type, message, final_round = False):
     global letter_guesses
 
     valid_input = False
@@ -31,13 +32,19 @@ def Validate_Input(input_type, message):
                 if guess in ['a','e','i','o','u']:
                     print()
                     print("Error: That's a vowel! \n")
+                elif final_round == True and guess in ['r','s','t','l','n']:
+                    print("\nError: R-S-T-L-N-E already provided!\n")
                 else:
+                    letter_guesses.add(guess)
                     return guess
             else:
                 if guess not in ['a','e','i','o','u']:
                     print()
                     print("Error: That's a consonant! \n")
+                elif final_round == True and guess == 'e':
+                    print("\nError: R-S-T-L-N-E already provided!\n")
                 else:
+                    letter_guesses.add(guess)
                     return guess
         elif input_type == "option":
             while valid_input == False:
@@ -106,34 +113,62 @@ def Game_Setup(same_players = True, final_round = False):
 
             player_list = [player_1, player_2, player_3]
 
-    f = open('words_alpha.txt')
-    dict_lines = f.read().splitlines()
-    f.close()
+        f = open('words_alpha.txt')
+        dict_lines = f.read().splitlines()
+        f.close()
 
-    dictionary_set = set()
-    letter_guesses = set()
+        dictionary_set = set()
+        letter_guesses = set()
 
-    for line in dict_lines:
-        dictionary_set.add(line)
+        for line in dict_lines:
+            dictionary_set.add(line)
 
-    dictionary_set = dictionary_set - previous_words
+        dictionary_set = dictionary_set - previous_words
 
-    correct_word = random.choice(tuple(dictionary_set))
-    previous_words.add(correct_word)
-    print(previous_words)
-    game_board = []
+        correct_word = random.choice(tuple(dictionary_set))
+        previous_words.add(correct_word)
+        print(previous_words)
+        game_board = []
 
-    for letter in correct_word:
-        if letter.isalpha():
-            game_board.append("_")
-        else:
-            game_board.append(letter)
+        for letter in correct_word:
+            if letter.isalpha():
+                game_board.append("_")
+            else:
+                game_board.append(letter)
 
 
-    print("\nSolve this puzzle:\n")
-    print(' '.join(game_board))
-    print()
+        print("\nSolve this puzzle:\n")
+        print(' '.join(game_board))
+        print()
 
+    else: 
+
+        f = open('words_alpha.txt')
+        dict_lines = f.read().splitlines()
+        f.close()
+
+        dictionary_set = set()
+        letter_guesses = set()
+
+        for line in dict_lines:
+            dictionary_set.add(line)
+
+        dictionary_set = dictionary_set - previous_words
+
+        correct_word = random.choice(tuple(dictionary_set))
+        previous_words.add(correct_word)
+        print(previous_words)
+        
+        game_board = []
+        
+        for letter in correct_word:
+            if letter in ['r','s','t','l','n','e']:
+                game_board.append(letter.upper())
+            else:
+                game_board.append('_')
+
+        print(' '.join(game_board))
+        print()
 
 
 def Update_Board(input_type, guess):
@@ -156,6 +191,9 @@ def Update_Board(input_type, guess):
             Next_Player()
 
         letter_guesses.add(guess)
+    
+        print(' '.join(game_board))
+        print()
 
     elif input_type == "word":
         if guess.lower() == correct_word:
@@ -167,11 +205,16 @@ def Update_Board(input_type, guess):
             print("Incorrect!\n")
             Next_Player()
 
-
-    print(' '.join(game_board))
-    print()
+        print(' '.join(game_board))
+        print()
     
+    else: 
+        for i in range(0,len(correct_word)):
+            if guess == list(correct_word)[i]:
+                letter_count+=1
+                game_board[i] = guess.upper()
 
+    
 
 def Next_Player():
     global current_player
@@ -385,13 +428,18 @@ def Options_Menu():
             Loop_Round()
 
 
+def exit():
+    print()
+    print("\nTimes Up!\n")
+
+
 previous_words = set()
 
 
 # Round 1
 
 Game_Setup(same_players = False)
-print("Round 1:\n==========")
+print("\nRound 1:\n==========")
 print("Starting player chosen randomly.\n")
 current_player = random.choice(player_list)
 print(f"{current_player} goes first!\n")
@@ -454,16 +502,61 @@ current_player = overall_winner
 
 
 # Show Overall Winnings for each player across both rounds
-time.sleep(0.1)
+time.sleep(0.2)
 print("\nOverall Winnings:\n=================\n")
 for i in range(len(total_winnings)):
+    time.sleep(0.2)
     print(f"{player_list[i]}: ${total_winnings[i]}")
 
 print(f"\n{overall_winner} has the most money with ${max_winnings}!\n")
 print("They will advance to the Final Round!\n")
 
-print("Final Round:\n==========")
+time.sleep(0.1)
+print("\nFinal Round:\n============\n")
+print(f"Welcome to the Final Round, {overall_winner}!")
+print("You've spun the mystery prize wheel.\nShould you solve the Final Puzzle, it's yours.\n")
+time.sleep(0.1)
+print("The letters R-S-T-L-N-E will be revealed for you.\n")
+
+
 Game_Setup(same_players = False, final_round = True)
 mystery_prize = Spin_Wheel(final_round = True)
-print(f"\n{current_player}. You have 10 seconds. Good luck!:\n=================\n")
+print("You are allowed to guess 3 consonants and 1 vowel. Enter them now.\n")
 
+consonant_1 = Validate_Input('consonant', "Enter the 1st consonant: ", final_round = True)
+
+Update_Board('final_round', consonant_1)
+consonant_2 = Validate_Input('consonant', "Enter the 2nd consonant: ", final_round = True)
+
+Update_Board('final_round', consonant_2)
+consonant_3 = Validate_Input('consonant', "Enter the 3rd consonant: ", final_round = True)
+
+Update_Board('final_round', consonant_3)
+vowel_1 = Validate_Input('vowel', "Enter a vowel: ")
+
+Update_Board('final_round', vowel_1)
+
+
+input("\n You will have 10 seconds to solve the puzzle. When you're ready. Press [Enter] to continue. ")
+
+print(' '.join(game_board))
+
+print(f"\n Alright. {current_player}. You have 10 seconds. Good luck!:\n")
+
+solved = False
+
+input_time = 10
+t = Timer(input_time, exit)
+
+t.start()
+
+while not solved:
+    guess = input("Guess a word: ")
+    if guess.lower() == correct_word.lower():
+        game_board = list(correct_word)
+        print("Correct!\n")
+        print("The word was \n")
+        print(' '.join(game_board))
+        solved = True
+        
+t.cancel()
