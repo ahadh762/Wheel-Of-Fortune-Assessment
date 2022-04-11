@@ -16,7 +16,8 @@ The files in this repo include:
 
 * [words-alpha.txt](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/words_alpha.txt): 
     <br />
-    * A list of English words containing only words with alphabetic characters serving as our source of words for the game
+    * Source of words for the game
+        * Only words with ALL alphabetic characters allowed
     <br />
 
     * File Source: [english-words](https://github.com/dwyl/english-words)
