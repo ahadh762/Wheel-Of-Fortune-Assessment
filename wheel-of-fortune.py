@@ -566,7 +566,7 @@ input("\n You will have 10 seconds to solve the puzzle. You have one guess. When
 
 print(' '.join(game_board))
 
-print(f"\n Alright, {current_player}. You have 10 seconds Good luck!\n")
+print(f"\n Alright, {current_player}. You have 10 seconds. Good luck!\n")
 
 solved = False
 
