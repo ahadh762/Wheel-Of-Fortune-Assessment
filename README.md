@@ -7,13 +7,10 @@ This repository is for the game Wheel of Fortune, coded using Python by Ahad Hus
 The files in this repo include:
 <br />
 * [WOF-Game-Rules.md](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/WOF-Game-Rules.md):
-    <br />
     * A brief summary of the game's rules
 
 
 * [wheel-of-fortune.py](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/wheel-of-fortune.py):
-    <br />
-
     * The actual Python script file
 
     <br />
@@ -22,7 +19,7 @@ The files in this repo include:
     * A list of English words containing only words with alphabetic characters serving as our source of words for the game
     <br />
 
-    * [english-words](https://github.com/dwyl/english-words) public repository is the source of the file
+    * File Source: [english-words](https://github.com/dwyl/english-words)
 
 <br/>
 
