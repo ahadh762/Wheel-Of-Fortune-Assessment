@@ -21,7 +21,8 @@ The files in this repo include:
     <br />
     * A list of English words containing only words with alphabetic characters serving as our source of words for the game
     <br />
-    * Courtesy of the the english-words repo: [english-words](https://github.com/dwyl/english-words)
+
+    * [english-words](https://github.com/dwyl/english-words) public repository is the source of the file
 
 <br/>
 
