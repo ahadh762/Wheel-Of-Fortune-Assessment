@@ -6,6 +6,7 @@ This repository is for the game Wheel of Fortune, coded using Python by Ahad Hus
 
 The files in this repo include:
 <br />
+<br />
 * [WOF-Game-Rules.md](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/WOF-Game-Rules.md):
     * A brief summary of the game's rules
     
@@ -13,7 +14,7 @@ The files in this repo include:
 
 * [wheel-of-fortune.py](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/wheel-of-fortune.py):
     * The actual Python script file
-    
+
 <br />
 
 * [words-alpha.txt](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/words_alpha.txt): 
