@@ -2,6 +2,8 @@ import random
 import time
 from threading import Timer
 
+
+# Function checks if required input is valid
 def Validate_Input(input_type, message, final_round = False):
     global letter_guesses
 
@@ -70,7 +72,7 @@ def Validate_Input(input_type, message, final_round = False):
             else:
                 return word
 
-
+# Function sets up the initial game board and initializes variables including the correct word to guess
 def Game_Setup(same_players = True, final_round = False):
     global correct_word
     global player_list
@@ -141,6 +143,7 @@ def Game_Setup(same_players = True, final_round = False):
         print(' '.join(game_board))
         print()
 
+    # If it is the Final Round
     else: 
 
         f = open('words_alpha.txt')
@@ -157,7 +160,9 @@ def Game_Setup(same_players = True, final_round = False):
 
         correct_word = random.choice(tuple(dictionary_set))
         previous_words.add(correct_word)
+        
         print(previous_words)
+        print()
         
         game_board = []
         
@@ -170,7 +175,7 @@ def Game_Setup(same_players = True, final_round = False):
         print(' '.join(game_board))
         print()
 
-
+# Updates Game Board after every player action
 def Update_Board(input_type, guess):
     time.sleep(0.2)
     global game_board
@@ -215,7 +220,7 @@ def Update_Board(input_type, guess):
                 game_board[i] = guess.upper()
 
     
-
+# If player loses turn, shifts to next player in line
 def Next_Player():
     global current_player
 
@@ -227,7 +232,7 @@ def Next_Player():
         current_player = player_list[0]
         print(f"{current_player} goes next!\n")
 
-
+# Function is used for exception where only vowels remain to guess
 def Consonant_Count():
     global game_board
     global correct_word
@@ -242,7 +247,7 @@ def Consonant_Count():
         if i not in vowels:
             consonant_count += 1
 
-
+# Function keeps track of player bank. Notice the time.sleep() delay function is used to make scrolling text smoother.
 def Player_Bank(prize, round_end = False):
     time.sleep(0.2)
     global player_1_bank
@@ -276,7 +281,7 @@ def Player_Bank(prize, round_end = False):
 
     print()
 
-
+# Function spins the wheel and returns the proper value
 def Spin_Wheel(final_round = False):
     global current_player
 
@@ -295,7 +300,7 @@ def Spin_Wheel(final_round = False):
 
     return wheel_value
 
-
+# Function defines the round, which consists of a player spinning the wheel and guessing a consonant
 def Round():
     global current_player
     global game_board
@@ -320,7 +325,7 @@ def Round():
         else:
             return False
 
-
+# Function loops the above round function until the round ends
 def Loop_Round():
     global current_player
     end_round = False
@@ -329,6 +334,10 @@ def Loop_Round():
         end_round = Round()
 
 
+# After a player successfully guesses a consonant after spinning the wheel, they have three options to choose from
+# 1. Solving the puzzle
+# 2. Buying a vowel
+# 3. Spinning the wheel again
 def Options_Menu():
     global end_round
     global current_player
@@ -428,9 +437,20 @@ def Options_Menu():
             Loop_Round()
 
 
+# Exit function for the timer used in the final round
+# Activated if players fails to guess the final puzzle after 10 seconds
 def exit():
+    global solved
+    solved = True
     print()
     print("\nTimes Up!\n")
+    game_board = list(correct_word)
+    print("Too bad!\n")
+    print("The word was \n")
+    print(' '.join(game_board))
+    print()
+    print(f"{overall_winner}, you won't be getting the ${mystery_prize} prize from the mystery wheel!\n")
+    print(f"However, you do get to keep your ${max_winnings}! Congratulations!\n\nThanks for playing Wheel of Fortune!\n")
 
 
 previous_words = set()
@@ -446,24 +466,28 @@ print(f"{current_player} goes first!\n")
 
 end_round = False
 
+# This is the first turn of the round
 Loop_Round()
 
+# From second turn until the last, keep playing game until word has been guessed!
 while end_round == False:
     time.sleep(0.1)
     Options_Menu()
 
+# Winner of each round gets additional $1000 added to their winnings
 time.sleep(0.2)
 print(f"\n{current_player} gets $1000 added to their winnings!\n")
 time.sleep(0.2)
 print("\nRound 1 Winnings:\n=================")
 
-count = 1
+letter_count = 1
 Player_Bank(1000,round_end = True)
 
 round_1_winnings = bank_list
 
 
-# Round 2
+# Round 2 (rules the same as Round 1)
+
 time.sleep(0.5)
 print("\nRound 2:\n==========")
 time.sleep(0.2)
@@ -503,7 +527,7 @@ current_player = overall_winner
 
 # Show Overall Winnings for each player across both rounds
 time.sleep(0.2)
-print("\nOverall Winnings:\n=================\n")
+print("\nOverall Winnings:\n=================")
 for i in range(len(total_winnings)):
     time.sleep(0.2)
     print(f"{player_list[i]}: ${total_winnings[i]}")
@@ -511,6 +535,8 @@ for i in range(len(total_winnings)):
 print(f"\n{overall_winner} has the most money with ${max_winnings}!\n")
 print("They will advance to the Final Round!\n")
 
+
+# Start the Final Round
 time.sleep(0.1)
 print("\nFinal Round:\n============\n")
 print(f"Welcome to the Final Round, {overall_winner}!")
@@ -518,11 +544,12 @@ print("You've spun the mystery prize wheel.\nShould you solve the Final Puzzle, 
 time.sleep(0.1)
 print("The letters R-S-T-L-N-E will be revealed for you.\n")
 
-
+# Set_up game and spin the mystery wheel!
 Game_Setup(same_players = False, final_round = True)
 mystery_prize = Spin_Wheel(final_round = True)
 print("You are allowed to guess 3 consonants and 1 vowel. Enter them now.\n")
 
+# Collect 3 consonants and 1 vowel from the player
 consonant_1 = Validate_Input('consonant', "Enter the 1st consonant: ", final_round = True)
 
 Update_Board('final_round', consonant_1)
@@ -545,6 +572,7 @@ print(f"\n Alright. {current_player}. You have 10 seconds. Good luck!:\n")
 
 solved = False
 
+# Start 10 second timer. Player has to guess word within 10 seconds. They have unlimited guesses.
 input_time = 10
 t = Timer(input_time, exit)
 
@@ -557,6 +585,13 @@ while not solved:
         print("Correct!\n")
         print("The word was \n")
         print(' '.join(game_board))
+        print()
+        print(f"{overall_winner}, you'll be taking home ${mystery_prize} in addition to the ${max_winnings} from earlier!")
+        grand_total = mystery_prize + max_winnings
+        print(f"Your grand total is ${grand_total}! Congratulations!\n\nThanks for playing Wheel of Fortune!\n")
+        print()
+        print()
         solved = True
         
 t.cancel()
+
