@@ -13,6 +13,7 @@ The files in this repo include:
 * [wheel-of-fortune.py](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/wheel-of-fortune.py):
     * The actual Python script file
 <br />
+
 * [words-alpha.txt](https://github.com/ahadh762/Wheel-Of-Fortune-Assessment/blob/master/words_alpha.txt): 
     <br />
     * A list of English words containing only words with alphabetic characters serving as our source of words for the game
