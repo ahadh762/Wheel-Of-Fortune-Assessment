@@ -44,6 +44,4 @@
 
 ## Game End:
 
-* Ask to play again (y/n)
-* If 'y', reset the game with new players
-* If 'n', close the game
+* Reveal prize and add it to player's current total if they guess the word correctly
