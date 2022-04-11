@@ -440,8 +440,6 @@ def Options_Menu():
 # Exit function for the timer used in the final round
 # Activated if players fails to guess the final puzzle after 10 seconds
 def exit():
-    global solved
-    solved = True
     print()
     print("\nTimes Up!\n")
     game_board = list(correct_word)
@@ -564,34 +562,41 @@ vowel_1 = Validate_Input('vowel', "Enter a vowel: ")
 Update_Board('final_round', vowel_1)
 
 
-input("\n You will have 10 seconds to solve the puzzle. When you're ready. Press [Enter] to continue. ")
+input("\n You will have 10 seconds to solve the puzzle. You have one guess. When you're ready. Press [Enter] to continue. ")
 
 print(' '.join(game_board))
 
-print(f"\n Alright. {current_player}. You have 10 seconds. Good luck!:\n")
+print(f"\n Alright, {current_player}. You have 10 seconds Good luck!\n")
 
 solved = False
 
-# Start 10 second timer. Player has to guess word within 10 seconds. They have unlimited guesses.
+# Start 10 second timer. Player has to guess word within 10 seconds. They have 1 guess.
 input_time = 10
 t = Timer(input_time, exit)
 
 t.start()
 
-while not solved:
-    guess = input("Guess a word: ")
-    if guess.lower() == correct_word.lower():
-        game_board = list(correct_word)
-        print("Correct!\n")
-        print("The word was \n")
-        print(' '.join(game_board))
-        print()
-        print(f"{overall_winner}, you'll be taking home ${mystery_prize} in addition to the ${max_winnings} from earlier!")
-        grand_total = mystery_prize + max_winnings
-        print(f"Your grand total is ${grand_total}! Congratulations!\n\nThanks for playing Wheel of Fortune!\n")
-        print()
-        print()
-        solved = True
+guess = input("Guess a word: ")
+if guess.lower() == correct_word.lower():
+    game_board = list(correct_word)
+    print("Correct!\n")
+    print("The word was \n")
+    print(' '.join(game_board))
+    print()
+    print(f"{overall_winner}, you'll be taking home ${mystery_prize} in addition to the ${max_winnings} from earlier!")
+    grand_total = mystery_prize + max_winnings
+    print(f"Your grand total is ${grand_total}! Congratulations!\n\nThanks for playing Wheel of Fortune!\n")
+    print()
+    print()
+else:
+    game_board = list(correct_word)
+    print("Too bad!\n")
+    print("The word was \n")
+    print(' '.join(game_board))
+    print()
+    print(f"{overall_winner}, you won't be getting the ${mystery_prize} prize from the mystery wheel!\n")
+    print(f"However, you do get to keep your ${max_winnings}! Congratulations!\n\nThanks for playing Wheel of Fortune!\n")
+
         
 t.cancel()
 
